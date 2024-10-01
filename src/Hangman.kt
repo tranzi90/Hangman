@@ -1,4 +1,3 @@
-import java.util.*
 import kotlin.random.Random
 
 val words = listOf("elbow", "writer", "circle", "polish", "bridge", "store", "fang", "scarecrow", "show", "jeans", "wilderness", "attempt", "waxing", "aftermath", "banana", "wrist", "wheel", "spring", "cherries", "nerve")
@@ -13,7 +12,7 @@ fun main() {
 
 fun setupGame(): Unit {
     val wordIndex = Random.nextInt(words.size)
-    word = words[wordIndex].uppercase(Locale.getDefault())
+    word = words[wordIndex]
     println(word)
 
     for (i in word.indices)
@@ -29,10 +28,32 @@ fun setupGame(): Unit {
         if (input.isEmpty()) {
             println("That's not a valid input. Please try again")
         } else {
-
+            val letter = input[0].lowercaseChar()
+            if (word.contains(letter)) {
+                for (i in word.indices) {
+                    if (word[i] == letter)
+                        guesses[i] = letter
+                }
+                if (!guesses.contains('_'))
+                    gameOver = true
+            } else {
+                println("Sorry, that's not part of the word")
+                remainingGuesses--
+                mistakes++
+                if (mistakes == 6)
+                    gameOver = true
+            }
         }
 
     } while (!gameOver)
+
+    if(mistakes == 6) {
+        printGameStatus()
+        println("Sorry, you lost. The word was \n$word")
+    } else {
+        println("\nCongratulations, you win!")
+        println("The word was \n$word")
+    }
 }
 
 fun printGameStatus(): Unit {
@@ -48,7 +69,7 @@ fun printGameStatus(): Unit {
 
     print("Word: ")
     for (element in guesses)
-        print(element + " ")
+        print(element.uppercase() + " ")
 
     println("\nYou have $remainingGuesses guess(es) left")
 }
